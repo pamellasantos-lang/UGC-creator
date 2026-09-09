@@ -64,7 +64,7 @@ st.markdown("""
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts unificados em português com unboxing, transições, zoom de detalhes e CTA apontando para baixo.")
+st.caption("Crie prompts unificados em português com unboxing, transições, zoom de detalhes e CTA fixo apontando para baixo.")
 
 st.markdown("---")
 
@@ -147,10 +147,10 @@ with col_left:
     )
 
 # ==========================================
-# COLUNA 2: CENÁRIO, AÇÕES E CTA VISUAL
+# COLUNA 2: CENÁRIO E AÇÕES
 # ==========================================
 with col_mid:
-    st.subheader("⚡ Cenário & CTA Visual")
+    st.subheader("⚡ Cenário & Ações")
 
     cenario = st.selectbox(
         "Ambiente / Cenário:",
@@ -190,14 +190,7 @@ with col_mid:
     )
 
     st.markdown("---")
-    st.write("**🛒 Chamada para Ação (CTA Visual)**")
-    
-    cta_choice = st.radio(
-        "Selecione o Texto da Chamada para Ação:",
-        ["Compre Aqui 👇", "Saiba Mais 👇", "Garanta o Seu 👇"],
-        horizontal=True,
-        help="(i) O prompt enviará um comando para a IA fazer a personagem/mãos apontarem para baixo no final do vídeo."
-    )
+    st.info("🛒 **CTA Fixo:** A chamada para ação está travada para a modelo/mãos apontarem para baixo no final do vídeo ('Compre Aqui 👇').")
 
 # ==========================================
 # COLUNA 3: OUTPUT DO PROMPT UNIFICADO
@@ -264,11 +257,11 @@ with col_right:
         elif acao_dinamica:
             prompt_unificado.append(f"Ação: {acao_dinamica}.")
 
-    # 3. CTA Visual no Final
+    # 3. CTA Visual Fixo no Final (Sem opção de alteração)
     prompt_unificado.append(
-        f"NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, a cena faz uma pausa sutil e traz um gesto/indicação visual direta apontando "
-        f"claramente para a parte inferior central da tela (direcionando o olhar para baixo, onde fica o botão de compra) "
-        f"com o texto em destaque '{cta_choice}'."
+        "NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, a cena faz uma pausa sutil e traz um gesto/indicação visual direta "
+        "apontando claramente para a parte inferior central da tela (direcionando o olhar para baixo em direção ao botão de compra do TikTok Shop) "
+        "com indicação de seta e legenda dizendo 'Compre Aqui 👇'."
     )
 
     # 4. Finalização de Qualidade e Ambiente
@@ -279,13 +272,13 @@ with col_right:
     prompt_completo_texto = " ".join(prompt_unificado)
 
     # Exibição do Prompt
-    st.markdown("**Prompt Único (Sequência Completa + Unboxing + Detalhes + CTA):**")
+    st.markdown("**Prompt Único (Sequência Completa + Unboxing + Detalhes + CTA Fixo Apontando para Baixo):**")
     st.code(prompt_completo_texto, language="markdown")
 
     # Orientação de Aplicação
     st.info(
         "💡 **Como Usar este Prompt Unificado:**\n\n"
         "1. Na sua ferramenta de IA (Kling AI, Luma, Google Flow, Meta AI), anexe a foto do produto e/ou modelo.\n"
-        "2. Cole todo o texto do código acima em um único campo de prompt.\n"
-        "3. O comando já forçou a IA a executar toda a sequência (unboxing/transição ➔ aproximação de detalhes ➔ indicação do CTA apontando para baixo)."
+        "2. Cole todo o texto gerado acima em um único campo de prompt.\n"
+        "3. A chamada para ação está pré-configurada para que a ação finalize apontando para baixo ('Compre Aqui 👇')."
     )
