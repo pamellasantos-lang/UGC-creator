@@ -132,7 +132,7 @@ st.markdown("""
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts otimizados para Fotos Base ou Vídeos Dinâmicos combinando Personagem + Produto.")
+st.caption("Crie prompts otimizados em português para Fotos Base ou Vídeos Dinâmicos combinando Personagem + Produto.")
 
 st.markdown("---")
 
@@ -165,7 +165,6 @@ with col_left:
         help="(i) Escolha 'Showcase Model' para simular alguém filmando ao redor do modelo com aproximações e zooms nos detalhes da peça."
     )
 
-    # Condicional para detalhes de peças no modo Showcase
     if "Showcase" in tipo_plano:
         tipo_peca = st.selectbox(
             "Foco Principal do Zoom / Peça:",
@@ -218,7 +217,7 @@ with col_mid:
             "Quarto moderno e iluminado com luz natural de janela",
             "Penteadeira / Banheiro de luxo com espelho",
             "Mesa minimalista de mármore",
-            "Cenário urbano / Rua moderna com estática clean",
+            "Cenário urbano / Rua moderna com estética clean",
             "Fundo neutro com iluminação suave de estúdio"
         ],
         help="(i) Local onde a cena ou foto acontecerá."
@@ -227,7 +226,7 @@ with col_mid:
     iluminacao = st.selectbox(
         "Iluminação / Clima Visual:",
         [
-            "Luz natural e suave de janela (Soft Window Light)",
+            "Luz natural e suave de janela",
             "Iluminação de estúdio limpa e brilhante",
             "Luz quente e aconchegante de fim de tarde (Golden Hour)"
         ]
@@ -236,19 +235,19 @@ with col_mid:
     if "POV" in tipo_plano:
         detalhes_membro = st.text_input(
             "Detalhes das Mãos:",
-            value="Mãos femininas com unhas longas decoradas e anéis delicados",
+            value="mãos femininas com unhas compridas decoradas e anéis delicados",
             help="(i) Estilo das mãos ao interagir com a peça."
         )
     else:
         detalhes_membro = st.text_input(
             "Vestuário / Estilo do Modelo:",
-            value="Look casual moderno e neutro",
+            value="look casual moderno e neutro",
             help="(i) Roupas e estilo do modelo na cena."
         )
 
     acao_dinamica = st.text_input(
         "Ação / Movimento Adicional:",
-        placeholder="Ex: Virando levemente de lado, ajeitando a gola, caminhando devagar...",
+        placeholder="Ex: virando levemente de lado, ajeitando a gola, caminhando devagar...",
         help="(i) Movimento sutil do modelo ou da ação na cena."
     )
 
@@ -268,53 +267,53 @@ with col_right:
 
     # 1. Definição se é Foto ou Vídeo
     if "Foto" in tipo_midia:
-        prompt_elements.append("High-resolution commercial product photograph, vertical 9:16 aspect ratio.")
+        prompt_elements.append("Fotografia comercial de produto em alta resolução, proporção vertical 9:16.")
     else:
-        prompt_elements.append("Realistic 9:16 vertical video clip, smooth cinematic motion.")
+        prompt_elements.append("Vídeo clipe vertical 9:16 ultra-realista, movimento cinematográfico suave.")
 
     # 2. Definição do Tipo de Câmera / Perspectiva
     if "Showcase" in tipo_plano:
-        prompt_elements.append("Dynamic 360-degree camera movement smoothly panning around the model.")
+        prompt_elements.append("Movimento dinâmico de câmera em 360 graus girando suavemente ao redor do modelo.")
         
         if tipo_peca:
             if "Blusa" in tipo_peca:
-                prompt_elements.append(f"Includes close-up zoom shots emphasizing the fabric texture, collar design, stitching, and fit of the {produto_nome if produto_nome else 'shirt/top'}.")
+                prompt_elements.append(f"Inclui tomadas de zoom em close-up destacando a textura do tecido, design da gola, costuras e caimento do(a) {produto_nome if produto_nome else 'peça/vestuário'}.")
             elif "Bermuda" in tipo_peca:
-                prompt_elements.append(f"Includes detailed zoom-in shots highlighting the pockets, waistband, waist fit, and material texture of the {produto_nome if produto_nome else 'pants/shorts'}.")
+                prompt_elements.append(f"Inclui tomadas de zoom aproximado destacando os bolsos, cós, ajuste da cintura e textura do material do(a) {produto_nome if produto_nome else 'calça/bermuda'}.")
             elif "Tênis" in tipo_peca:
-                prompt_elements.append(f"Includes sharp close-up zoom shots focusing on the shoe sole, side details, laces, and footwear material of the {produto_nome if produto_nome else 'sneakers/shoes'}.")
+                prompt_elements.append(f"Inclui tomadas de zoom em close-up focando no solado, detalhes laterais, cadarços e acabamento do(a) {produto_nome if produto_nome else 'tênis/calçado'}.")
             else:
-                prompt_elements.append(f"Includes detailed close-up zooms highlighting key features of the {produto_nome if produto_nome else 'outfit'}.")
+                prompt_elements.append(f"Inclui zooms detalhados em close-up destacando as principais características do(a) {produto_nome if produto_nome else 'look/produto'}.")
 
-        prompt_elements.append(f"Featuring the character from the attached reference image wearing {detalhes_membro.lower()}.")
+        prompt_elements.append(f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()}.")
 
     elif "POV" in tipo_plano:
-        prompt_elements.append("Top-down POV first-person perspective.")
-        prompt_elements.append(f"Featuring {detalhes_membro.lower()} interacting directly with the product shown in the reference image ({produto_nome if produto_nome else 'product'}).")
+        prompt_elements.append("Perspectiva em primeira pessoa (POV) vista de cima.")
+        prompt_elements.append(f"Apresentando {detalhes_membro.lower()} interagindo diretamente com o produto mostrado na imagem de referência ({produto_nome if produto_nome else 'produto'}).")
         
         if embalagem_efeito:
-            prompt_elements.append("The hands are carefully taking the item out of a clear transparent plastic package.")
+            prompt_elements.append("As mãos estão cuidadosamente retirando o item de dentro de uma embalagem plástica transparente.")
         else:
-            prompt_elements.append(f"Action: {acao_dinamica if acao_dinamica else 'displaying and touching the product'}.")
+            prompt_elements.append(f"Ação: {acao_dinamica if acao_dinamica else 'exibindo e tocando o produto suavemente'}.")
 
     else:
-        prompt_elements.append(f"Featuring the character from the reference image wearing {detalhes_membro.lower()}, holding or wearing the {produto_nome if produto_nome else 'product'}.")
+        prompt_elements.append(f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()}, segurando ou vestindo {produto_nome if produto_nome else 'o produto'}.")
         if acao_dinamica:
-            prompt_elements.append(f"Action: {acao_dinamica}.")
+            prompt_elements.append(f"Ação: {acao_dinamica}.")
 
     # 3. Finalização do Prompt
-    prompt_elements.append(f"Setting: {cenario.lower()}. {iluminacao}, sharp product focus, ultra high resolution, clean commercial UGC aesthetic.")
+    prompt_elements.append(f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, ultra alta resolução, estética comercial limpa estilo UGC.")
 
     prompt_final = " ".join(prompt_elements)
 
     # Instruções de Uso
     st.markdown("**Como Aplicar o Prompt:**")
     if "Foto" in tipo_midia:
-        st.info("🖼️ **Modo Foto Selecionado:** Anexe a imagem da modelo + produto e cole o prompt na IA para gerar a imagem base perfeita.")
+        st.info("🖼️ **Modo Foto Selecionado:** Anexe a imagem da modelo + produto e cole o prompt em português na IA para gerar a imagem base perfeita.")
     else:
         st.info("🎥 **Modo Vídeo Selecionado:** Anexe as imagens de referência e cole o prompt direto na IA de animação (Meta AI, Kling, Luma, Google Flow).")
 
-    st.markdown("**Prompt Gerado:**")
+    st.markdown("**Prompt Gerado (Totalmente em Português):**")
     st.code(prompt_final, language="markdown")
 
     st.markdown("---")
