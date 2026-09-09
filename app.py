@@ -132,7 +132,7 @@ st.markdown("""
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts otimizados em português com suporte a transições virais, controle de tempo e cenas de continuidade.")
+st.caption("Crie prompts otimizados em português com suporte a transições virais, CTA visual e cenas de continuidade.")
 
 st.markdown("---")
 
@@ -215,10 +215,10 @@ with col_left:
     )
 
 # ==========================================
-# COLUNA 2: CENÁRIO, AÇÕES E CONTINUIDADE
+# COLUNA 2: CENÁRIO, AÇÕES E CTA VISUAL
 # ==========================================
 with col_mid:
-    st.subheader("⚡ Cenário & Continuidade")
+    st.subheader("⚡ Cenário & CTA Visual")
 
     cenario = st.selectbox(
         "Ambiente / Cenário:",
@@ -258,17 +258,19 @@ with col_mid:
     )
 
     st.markdown("---")
-    st.write("**🎬 Sequência do Vídeo**")
+    st.write("**🛒 Chamada para Ação (CTA Visual)**")
+    
+    cta_choice = st.radio(
+        "Selecione o Texto da Chamada para Ação:",
+        ["Compre Aqui 👇", "Saiba Mais 👇", "Garanta o Seu 👇"],
+        horizontal=True,
+        help="(i) O prompt enviará um comando para a IA fazer a personagem/mãos apontarem para baixo no final do vídeo."
+    )
+
     gerar_continuidade = st.checkbox(
         "Gerar Prompt da Cena 2 (Continuidade para mostrar mais detalhes)",
         value=True,
         help="(i) Cria um segundo comando focado em aproximar a câmera e exibir o produto com mais tempo de tela."
-    )
-
-    cta_choice = st.radio(
-        "Botão de CTA (TikTok Preview):",
-        ["Compre Aqui 🛒", "Saiba Mais 🔗", "Garanta o Seu 🎁"],
-        horizontal=True
     )
 
 # ==========================================
@@ -276,6 +278,12 @@ with col_mid:
 # ==========================================
 with col_right:
     st.subheader("📋 Output dos Prompts")
+
+    # Comando visual explicito de CTA para apontar para baixo
+    cta_prompt_visual = (
+        f"Nos últimos 2 segundos do vídeo, a cena traz um elemento visual e um gesto direto apontando claramente para a parte inferior central da tela "
+        f"(apontando para baixo em direção ao carrinho/botão de compra) com uma seta indicativa e legenda visível dizendo '{cta_choice}'."
+    )
 
     # --- CENA 1 / PROMPT PRINCIPAL ---
     prompt_cena1 = []
@@ -317,10 +325,12 @@ with col_right:
         elif acao_dinamica:
             prompt_cena1.append(f"Ação: {acao_dinamica}.")
 
+    # Inclusão da CTA no final
+    prompt_cena1.append(cta_prompt_visual)
     prompt_cena1.append(f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, ultra alta resolução, estética comercial limpa estilo UGC.")
     prompt_final_1 = " ".join(prompt_cena1)
 
-    st.markdown("**1. Prompt Principal (Cena 1 / Transição):**")
+    st.markdown("**1. Prompt Principal (Cena 1 / Com CTA Apontando para Baixo):**")
     st.code(prompt_final_1, language="markdown")
 
     # --- CENA 2 (CONTINUIDADE E DETALHES DO PRODUTO) ---
@@ -329,17 +339,16 @@ with col_right:
             "Continuação da cena em vídeo clipe vertical 9:16 em câmera lenta.",
             f"Plano aproximado (Close-up em slow motion) com foco total nos detalhes do(a) {produto_nome if produto_nome else 'produto'} já posicionado(a) sobre {cenario.lower()}.",
             f"{detalhes_membro.title()} passam a mão suavemente sobre o tecido e textura do produto, virando levemente a peça para mostrar os acabamentos, costuras e detalhes de perto.",
+            cta_prompt_visual,
             "Panorâmica lenta de câmera deslizando sobre o produto. Foco nítido, iluminação natural de estúdio, estética comercial detalhada."
         ]
         prompt_final_2 = " ".join(prompt_cena2)
 
-        st.markdown("**2. Prompt - Cena 2 (Continuidade & Detalhes do Produto):**")
+        st.markdown("**2. Prompt - Cena 2 (Continuidade & Detalhes + CTA Final):**")
         st.code(prompt_final_2, language="markdown")
 
-    # Dica Técnica de Extensão de Vídeo
-    st.info("💡 **Como Fazer a Transição na IA:**\n"
-            "* **Opção 1 (Multi-Image):** Envie a foto do produto na cama como Foto 1 e a foto da modelo vestida no espelho como Foto 2 e aplique o Prompt Principal.\n"
-            "* **Opção 2 (Extend):** Gere os 3 primeiros segundos do unboxing com a Cena 1, aperte 'Estender / Extend', adicione a foto da modelo e rode o comando da Cena 2!")
+    # Dica Técnica
+    st.info("💡 **Dica do CTA:** O comando agora inclui uma instrução explícita de gesto/indicação visual com a mensagem 'Compre Aqui 👇' apontando para a borda inferior, que é onde fica o carrinho de compras nos anúncios do TikTok e Reels.")
 
     st.markdown("---")
     st.markdown("**Simulador de Tela (TikTok 9:16)**")
@@ -350,8 +359,8 @@ with col_right:
             <div class="tiktok-card">
                 <div class="tiktok-badge">PREVIEW 9:16</div>
                 <div style="position: absolute; top: 38%; left: 10%; right: 10%; text-align: center;">
-                    <p style="font-size: 26px; margin-bottom: 5px;">{"🔥" if "Transição" in tipo_plano else "🎬"}</p>
-                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">{"UNBOXING ➔ TRY-ON" if "Transição" in tipo_plano else "CENA ÚNICA"}</p>
+                    <p style="font-size: 26px; margin-bottom: 5px;">{"👇"}</p>
+                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">{cta_choice.upper()}</p>
                     <p class="tiktok-text" style="font-size: 10px !important; color: #9CA3AF !important;">{produto_nome if produto_nome else 'Produto'}</p>
                 </div>
                 <div class="tiktok-sidebar">
@@ -360,7 +369,7 @@ with col_right:
                     <div class="tiktok-icon-btn">🔖</div>
                 </div>
                 <div class="tiktok-bottom">
-                    <div class="shop-tag">{cta_choice}</div>
+                    <div class="shop-tag">🛒 {cta_choice}</div>
                     <p class="tiktok-text" style="font-weight: bold;">@ugc.studio</p>
                     <p class="tiktok-text" style="font-size: 10px !important; color: #D1D5DB !important;">Foco: {ritmo_duracao.split('/')[0]}</p>
                 </div>
