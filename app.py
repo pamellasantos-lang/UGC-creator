@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. Estilização CSS de Alta Visibilidade (Estúdio Claro Pro & Alto Contraste)
+# 2. Estilização CSS de Alta Visibilidade e Contraste
 st.markdown("""
     <style>
     .stApp {
@@ -59,84 +59,16 @@ st.markdown("""
         font-size: 13px !important;
         line-height: 1.5 !important;
     }
-    .phone-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 15px;
-    }
-    .tiktok-card {
-        width: 260px;
-        height: 450px;
-        background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-        border: 4px solid #334155;
-        border-radius: 24px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-    .tiktok-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: rgba(15, 23, 42, 0.8);
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: bold;
-        color: #38BDF8 !important;
-        border: 1px solid #38BDF8;
-    }
-    .tiktok-sidebar {
-        position: absolute;
-        right: 10px;
-        bottom: 70px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-    .tiktok-icon-btn {
-        background: rgba(255, 255, 255, 0.15);
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-    }
-    .tiktok-bottom {
-        position: absolute;
-        bottom: 12px;
-        left: 12px;
-        right: 55px;
-    }
-    .shop-tag {
-        background: #FE2C55;
-        color: #FFFFFF !important;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: bold;
-        display: inline-block;
-        margin-bottom: 6px;
-    }
-    .tiktok-text {
-        font-size: 11px !important;
-        line-height: 1.2 !important;
-        margin: 0 !important;
-        color: #F8FAFC !important;
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts otimizados em português com suporte a transições virais, CTA visual e cenas de continuidade.")
+st.caption("Crie prompts unificados em português com unboxing, transições, zoom de detalhes e CTA apontando para baixo.")
 
 st.markdown("---")
 
-col_left, col_mid, col_right = st.columns([1, 1.1, 1], gap="medium")
+col_left, col_mid, col_right = st.columns([1, 1.1, 1.2], gap="medium")
 
 # ==========================================
 # COLUNA 1: FORMATO, TIPO DE MÍDIA E DURAÇÃO
@@ -267,114 +199,93 @@ with col_mid:
         help="(i) O prompt enviará um comando para a IA fazer a personagem/mãos apontarem para baixo no final do vídeo."
     )
 
-    gerar_continuidade = st.checkbox(
-        "Gerar Prompt da Cena 2 (Continuidade para mostrar mais detalhes)",
-        value=True,
-        help="(i) Cria um segundo comando focado em aproximar a câmera e exibir o produto com mais tempo de tela."
-    )
-
 # ==========================================
-# COLUNA 3: OUTPUT DE PROMPTS (CENA 1 E CENA 2)
+# COLUNA 3: OUTPUT DO PROMPT UNIFICADO
 # ==========================================
 with col_right:
-    st.subheader("📋 Output dos Prompts")
+    st.subheader("📋 Prompt Unificado (Vídeo Completo)")
 
-    # Comando visual explicito de CTA para apontar para baixo
-    cta_prompt_visual = (
-        f"Nos últimos 2 segundos do vídeo, a cena traz um elemento visual e um gesto direto apontando claramente para a parte inferior central da tela "
-        f"(apontando para baixo em direção ao carrinho/botão de compra) com uma seta indicativa e legenda visível dizendo '{cta_choice}'."
-    )
+    prompt_unificado = []
 
-    # --- CENA 1 / PROMPT PRINCIPAL ---
-    prompt_cena1 = []
+    # 1. Formato e Ritmo
     if "Foto" in tipo_midia:
-        prompt_cena1.append("Fotografia comercial de produto em alta resolução, proporção vertical 9:16.")
+        prompt_unificado.append("Fotografia comercial de produto em alta resolução, proporção vertical 9:16.")
     else:
-        prompt_cena1.append("Vídeo clipe vertical 9:16 ultra-realista no estilo UGC viral do TikTok.")
+        prompt_unificado.append("Vídeo clipe vertical 9:16 ultra-realista e contínuo no estilo UGC viral do TikTok.")
 
-    # Ritmo de Câmera
     if "Câmera Lenta" in ritmo_duracao:
-        prompt_cena1.append("Movimento de câmera e ação em câmera lenta (slow motion 0.5x), tempo estendido e ritmado suavemente.")
+        prompt_unificado.append("Movimentos de câmera e ações em câmera lenta (slow motion 0.5x), estendendo a duração da cena e mantendo fluidez pausada.")
     elif "Suave" in ritmo_duracao:
-        prompt_cena1.append("Movimento de câmera suave, fluidez contínua e pausada.")
+        prompt_unificado.append("Movimento de câmera suave, cadenciado e de longa duração.")
 
-    # Lógica de Construção por Perspectiva
+    # 2. Ação Inicial + Transição / Exibição
     if "Transição Viral" in tipo_plano:
-        prompt_cena1.append(f"PARTE 1: Perspectiva em primeira pessoa (POV) vista de cima das {detalhes_membro.lower()} rasgando a embalagem plástica transparente com calma, retirando o(a) {produto_nome if produto_nome else 'produto'} de dentro e arrumando a peça sobre {cenario.lower()}, exatamente como mostrado na foto de referência.")
-        prompt_cena1.append(f"TRANSIÇÃO CORTE RÁPIDO (JUMP CUT): A modelo da foto de referência aparece vestindo o(a) mesmo(a) {produto_nome if produto_nome else 'produto'}, gravando um vídeo de selfie no espelho de corpo inteiro com seu smartphone no quarto. Ela se vira suavemente mostrando o caimento do produto e o ajuste no corpo.")
+        prompt_unificado.append(
+            f"A CENA COMEÇA com perspectiva em primeira pessoa (POV) vista de cima das {detalhes_membro.lower()} "
+            f"rasgando a embalagem plástica transparente com calma, retirando o(a) {produto_nome if produto_nome else 'produto'} "
+            f"de dentro e arrumando a peça sobre {cenario.lower()}, exatamente como mostrado na foto de referência. "
+            f"EM SEGUIDA, HÁ UMA TRANSIÇÃO COM CORTE RÁPIDO (JUMP CUT) onde a modelo da foto de referência aparece vestindo "
+            f"o(a) mesmo(a) {produto_nome if produto_nome else 'produto'}, gravando um vídeo de selfie no espelho de corpo inteiro com seu smartphone. "
+            f"Ela se vira suavemente mostrando o caimento do produto e o ajuste no corpo."
+        )
 
     elif "Showcase" in tipo_plano:
-        prompt_cena1.append("Movimento dinâmico de câmera em 360 graus girando lentamente ao redor do modelo.")
-        if tipo_peca:
-            prompt_cena1.append(f"Apresentando o(a) {produto_nome if produto_nome else 'produto'}.")
-        prompt_cena1.append(f"Apresentando a personagem vestindo {detalhes_membro.lower()}.")
+        prompt_unificado.append(
+            f"A CENA COMEÇA com um movimento dinâmico de câmera em 360 graus girando lentamente ao redor da personagem vestindo {detalhes_membro.lower()}. "
+            f"A CÂMERA ENTÃO APROXIMA EM ZOOM LENTO para mostrar em close-up a textura do tecido, costuras, acabamento e detalhes de perto do(a) {produto_nome if produto_nome else 'produto'}."
+        )
 
     elif "POV" in tipo_plano:
-        prompt_cena1.append("Perspectiva em primeira pessoa (POV) vista de cima em ritmo lento.")
-        prompt_cena1.append(f"Apresentando {detalhes_membro.lower()} interagindo diretamente com a peça.")
-        
+        prompt_unificado.append(
+            f"Perspectiva em primeira pessoa (POV) vista de cima em ritmo lento apresentando {detalhes_membro.lower()} interagindo com a peça. "
+        )
         if embalagem_efeito:
-            prompt_cena1.append(f"Ação de Unboxing em movimento pausado: As mãos rasgam a embalagem plástica transparente com calma, retiram o(a) {produto_nome if produto_nome else 'produto'} de dentro e o(a) posicionam cuidadosamente sobre {cenario.lower()}, estendendo o produto exatamente como mostrado na foto de referência.")
+            prompt_unificado.append(
+                f"PRIMEIRO, as mãos rasgam a embalagem plástica transparente com calma, retiram o(a) {produto_nome if produto_nome else 'produto'} "
+                f"de dentro e o(a) posicionam cuidadosamente sobre {cenario.lower()}, estendendo a peça sobre a superfície. "
+                f"NA SEQUÊNCIA DA MESMA CENA, a câmera faz um zoom suave de aproximação enquanto as mãos passam os dedos sobre o tecido, "
+                f"exibindo as costuras, estampa e texturas de perto em câmera lenta."
+            )
         else:
-            prompt_cena1.append(f"Ação: {acao_dinamica if acao_dinamica else 'exibindo e tocando o produto suavemente'}.")
+            prompt_unificado.append(
+                f"As mãos exibem e tocam o(a) {produto_nome if produto_nome else 'produto'} suavemente, "
+                f"virando a peça devagar para mostrar as costuras, tecido e acabamentos em um zoom aproximado de alta definição."
+            )
 
     else:
-        prompt_cena1.append(f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()}.")
+        prompt_unificado.append(
+            f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()} e mostrando o(a) {produto_nome if produto_nome else 'produto'}. "
+        )
         if embalagem_efeito:
-            prompt_cena1.append(f"Ação de Unboxing: As mãos rasgam a embalagem plástica transparente com calma, retiram o(a) {produto_nome if produto_nome else 'produto'} de dentro e o(a) posicionam sobre {cenario.lower()}, exatamente como na foto de referência.")
+            prompt_unificado.append(
+                f"As mãos rasgam a embalagem plástica transparente com calma, retiram o produto e o posicionam sobre {cenario.lower()}. "
+                f"Em seguida, a modelo exibe de perto os detalhes da peça."
+            )
         elif acao_dinamica:
-            prompt_cena1.append(f"Ação: {acao_dinamica}.")
+            prompt_unificado.append(f"Ação: {acao_dinamica}.")
 
-    # Inclusão da CTA no final
-    prompt_cena1.append(cta_prompt_visual)
-    prompt_cena1.append(f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, ultra alta resolução, estética comercial limpa estilo UGC.")
-    prompt_final_1 = " ".join(prompt_cena1)
+    # 3. CTA Visual no Final
+    prompt_unificado.append(
+        f"NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, a cena faz uma pausa sutil e traz um gesto/indicação visual direta apontando "
+        f"claramente para a parte inferior central da tela (direcionando o olhar para baixo, onde fica o botão de compra) "
+        f"com o texto em destaque '{cta_choice}'."
+    )
 
-    st.markdown("**1. Prompt Principal (Cena 1 / Com CTA Apontando para Baixo):**")
-    st.code(prompt_final_1, language="markdown")
+    # 4. Finalização de Qualidade e Ambiente
+    prompt_unificado.append(
+        f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, ultra alta resolução, estética comercial limpa estilo UGC."
+    )
 
-    # --- CENA 2 (CONTINUIDADE E DETALHES DO PRODUTO) ---
-    if gerar_continuidade:
-        prompt_cena2 = [
-            "Continuação da cena em vídeo clipe vertical 9:16 em câmera lenta.",
-            f"Plano aproximado (Close-up em slow motion) com foco total nos detalhes do(a) {produto_nome if produto_nome else 'produto'} já posicionado(a) sobre {cenario.lower()}.",
-            f"{detalhes_membro.title()} passam a mão suavemente sobre o tecido e textura do produto, virando levemente a peça para mostrar os acabamentos, costuras e detalhes de perto.",
-            cta_prompt_visual,
-            "Panorâmica lenta de câmera deslizando sobre o produto. Foco nítido, iluminação natural de estúdio, estética comercial detalhada."
-        ]
-        prompt_final_2 = " ".join(prompt_cena2)
+    prompt_completo_texto = " ".join(prompt_unificado)
 
-        st.markdown("**2. Prompt - Cena 2 (Continuidade & Detalhes + CTA Final):**")
-        st.code(prompt_final_2, language="markdown")
+    # Exibição do Prompt
+    st.markdown("**Prompt Único (Sequência Completa + Unboxing + Detalhes + CTA):**")
+    st.code(prompt_completo_texto, language="markdown")
 
-    # Dica Técnica
-    st.info("💡 **Dica do CTA:** O comando agora inclui uma instrução explícita de gesto/indicação visual com a mensagem 'Compre Aqui 👇' apontando para a borda inferior, que é onde fica o carrinho de compras nos anúncios do TikTok e Reels.")
-
-    st.markdown("---")
-    st.markdown("**Simulador de Tela (TikTok 9:16)**")
-
-    st.markdown(
-        f"""
-        <div class="phone-wrapper">
-            <div class="tiktok-card">
-                <div class="tiktok-badge">PREVIEW 9:16</div>
-                <div style="position: absolute; top: 38%; left: 10%; right: 10%; text-align: center;">
-                    <p style="font-size: 26px; margin-bottom: 5px;">{"👇"}</p>
-                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">{cta_choice.upper()}</p>
-                    <p class="tiktok-text" style="font-size: 10px !important; color: #9CA3AF !important;">{produto_nome if produto_nome else 'Produto'}</p>
-                </div>
-                <div class="tiktok-sidebar">
-                    <div class="tiktok-icon-btn">❤️</div>
-                    <div class="tiktok-icon-btn">💬</div>
-                    <div class="tiktok-icon-btn">🔖</div>
-                </div>
-                <div class="tiktok-bottom">
-                    <div class="shop-tag">🛒 {cta_choice}</div>
-                    <p class="tiktok-text" style="font-weight: bold;">@ugc.studio</p>
-                    <p class="tiktok-text" style="font-size: 10px !important; color: #D1D5DB !important;">Foco: {ritmo_duracao.split('/')[0]}</p>
-                </div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+    # Orientação de Aplicação
+    st.info(
+        "💡 **Como Usar este Prompt Unificado:**\n\n"
+        "1. Na sua ferramenta de IA (Kling AI, Luma, Google Flow, Meta AI), anexe a foto do produto e/ou modelo.\n"
+        "2. Cole todo o texto do código acima em um único campo de prompt.\n"
+        "3. O comando já forçou a IA a executar toda a sequência (unboxing/transição ➔ aproximação de detalhes ➔ indicação do CTA apontando para baixo)."
     )
