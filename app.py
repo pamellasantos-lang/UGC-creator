@@ -1,195 +1,166 @@
 import streamlit as st
 
-# 1. Configuração da página em modo Wide e título Studio
+# Configuração da página
 st.set_page_config(
-    page_title="UGC Ad Studio - Aline",
+    page_title="UGC Studio - Aline",
     page_icon="🎬",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
-# 2. Estilização CSS Dark Theme (Estilo Studio Pro)
+# Estilização CSS de Alto Contraste (Textos claros sobre fundo escuro limpo)
 st.markdown("""
     <style>
-    /* Fundo Escuro do App */
+    /* Fundo da aplicação */
     .stApp {
-        background-color: #0d0f12;
-        color: #e2e8f0;
+        background-color: #0E1117;
+        color: #F0F6FC;
     }
     
-    /* Container Principal */
-    .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
+    /* Garantir alto contraste nos rótulos de texto */
+    label, .stMarkdown, p, h1, h2, h3, h4, span {
+        color: #F0F6FC !important;
     }
 
-    /* Cards e Caixas escuras */
-    div[data-testid="stVerticalBlock"] > div {
-        background-color: #161a22;
-        border-radius: 12px;
-        padding: 8px;
-        border: 1px solid #232936;
-    }
-
-    /* Botões estilo Neon/Dark */
-    .stButton>button {
-        background-color: #232936;
-        color: #e2e8f0;
-        border: 1px solid #374151;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-    .stButton>button:hover {
-        background-color: #4f46e5;
-        color: white;
-        border-color: #6366f1;
-    }
-
-    /* Inputs e Selectbox */
-    .stTextInput>div>div>input, .stSelectbox>div>div>div {
-        background-color: #0d0f12 !important;
-        color: #f3f4f6 !important;
-        border: 1px solid #374151 !important;
+    /* Inputs, Selectboxes e Caixas de texto com fundo escuro e texto branco */
+    .stTextInput input, .stSelectbox select, .stTextArea textarea {
+        background-color: #161B22 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #30363D !important;
         border-radius: 8px !important;
     }
 
-    /* Header e Textos */
-    h1, h2, h3, h4 {
-        color: #ffffff !important;
-        font-family: 'Inter', sans-serif;
+    /* Ajuste de cor em botões do Radio e Checkbox */
+    .stRadio div, .stCheckbox div {
+        color: #F0F6FC !important;
     }
 
-    /* Card de Preview do Vídeo */
-    .video-preview-box {
-        border: 2px solid #312e81;
-        border-radius: 16px;
-        background-color: #111827;
-        padding: 15px;
-        text-align: center;
+    /* Cards e Caixas de destaque */
+    .stAlert {
+        background-color: #161B22 !important;
+        color: #F0F6FC !important;
+        border: 1px solid #30363D !important;
+    }
+
+    /* Badge de destaque */
+    .badge-aline {
+        background-color: #238636;
+        color: #FFFFFF !important;
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 12px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- IDENTIDADE FIXA DA ALINE ---
-ALINE_CORE = (
-    "realistic photograph of 'Aline,' a young Latina woman (approx. 24) with long dark brown hair, "
-    "warm tan skin, detailed dark eyes, glossy nude lips, wearing a minimal gold chain necklace."
-)
-
-# --- HEADER DO STUDIO ---
-st.title("🎬 UGC Ad Studio")
-st.caption("Monte scripts, ângulos de gancho, prova social e gere prompts padronizados para a modelo Aline.")
+# Header Principal
+st.markdown("<span class='badge-aline'>MODELO FIXA: ALINE</span>", unsafe_allow_html=True)
+st.title("🎬 UGC Studio - Aline")
+st.caption("Central de geração de prompts de alta conversão para produtos no TikTok & Reels.")
 
 st.markdown("---")
 
-# --- LAYOUT EM 3 COLUNAS (Assim como no painel da imagem) ---
-col_left, col_mid, col_right = st.columns([1, 1.3, 1])
+# Layout em Duas Colunas Organizadoras
+col_config, col_output = st.columns([1.1, 1], gap="large")
 
-# ==========================================
-# PAINEL 1: CONFIGURAÇÕES E MODELO (ESQUERDA)
-# ==========================================
-with col_left:
-    st.subheader("👤 Modelo & Produto")
+with col_config:
+    st.subheader("⚙️ Configurações da Cena")
     
-    # Seleção de Modelo
-    model_opt = st.selectbox("Modelo Ativo", ["Aline 2.0 (Latina / Studio)", "Aline (Carro / Lifestyle)"])
-    
-    # Upload do Produto
-    st.write("**Upload do Produto**")
-    uploaded_file = st.file_uploader("Arraste a foto do produto aqui", type=["png", "jpg", "jpeg"])
-    
-    if uploaded_file:
-        st.image(uploaded_file, caption="Produto Carregado", use_column_width=True)
+    # Seleção do Estilo do Vídeo
+    estilo_cena = st.selectbox(
+        "🎥 Selecione o Estilo do Vídeo:",
+        [
+            "Visão POV - Mãos & Unboxing (Apenas mãos com joias e unhas decoradas)",
+            "Close-up de Rosto (Aline segurando produto ao lado do rosto)",
+            "Corpo Inteiro Lifestyle (Aline mostrando o produto no quarto)",
+            "Selfie no Espelho (Aline mostrando produto / look inteiro)"
+        ]
+    )
+
+    # Seleção de Imagem de Referência do GitHub
+    if "Visão POV" in estilo_cena:
+        ref_image = "Nenhuma (Visão POV - Foco Apenas nas Mãos)"
+        st.info("💡 Modo POV selecionado: A IA vai gerar o foco nas mãos com fundo estético, sem necessidade do rosto.")
+    elif "Close-up" in estilo_cena:
+        ref_image = "aline rosto.jpeg"
+        st.success("📁 Referência do GitHub ativada: **aline rosto.jpeg**")
     else:
-        st.info("📌 Envie uma foto do produto com fundo limpo.")
+        ref_image = "aline corpo.jpeg"
+        st.success("📁 Referência do GitHub ativada: **aline corpo.jpeg**")
 
-    # Avatar / Visual Focus
-    st.write("**Foco de Enquadramento**")
-    enquadramento = st.radio(
-        "Estilo da Cena",
-        ["Close-up (Rosto / Mão)", "Corpo Inteiro (Lifestyle)", "Espelho / Selfie"],
-        horizontal=True
-    )
-    
-    # Voice / Tone Settings
-    st.selectbox("Tom da Campanha", ["Viral / Dinâmico", "Reviews Espontâneos", "Luxo / Estética Minimalista"])
+    # Informações do Produto
+    produto_nome = st.text_input("📦 Nome / Descrição do Produto:", placeholder="Ex: Camiseta amarela, Conjunto de pijama de coração, Sérum facial...")
 
-# ==========================================
-# PAINEL 2: CONTENT FLOW (CENTRO)
-# ==========================================
-with col_mid:
-    st.subheader("⚡ Fluxo de Conteúdo (Content Flow)")
-    
-    # Hook Section
-    st.markdown("#### 1. Gancho (Hook)")
-    hook_type = st.selectbox(
-        "Tipo de Gancho Inicial",
-        [
-            "Mostrando o produto de surpresa",
-            "Segurando o produto próximo ao rosto com sorriso",
-            "Aplicando/Experimentando o produto diretamente na câmera"
-        ]
-    )
-
-    # Proof / Social Proof
-    st.markdown("#### 2. Prova / Demonstração (Proof)")
-    cenario_opcao = st.selectbox(
-        "Cenário / Ambientação",
-        [
-            "Quarto moderno bem iluminado com luz suave",
-            "Banheiro luxuoso / Penteadeira com espelho iluminado",
-            "Ambiente interno neutro e minimalista"
-        ]
-    )
-    
-    outfit = st.text_input("Vestuário da Aline", value="vestido preto justo de alça fina")
-
-    # Call to Action (CTA)
-    st.markdown("#### 3. Chamada para Ação (CTA)")
-    cta_choice = st.radio(
-        "Texto do Botão / CTA Final",
-        ["Shop Now", "Learn More", "Try It Today", "Get Yours"],
-        horizontal=True
-    )
-
-# ==========================================
-# PAINEL 3: PREVIEW E GERADOR (DIREITA)
-# ==========================================
-with col_right:
-    st.subheader("📱 Preview & Prompt Final")
-    
-    # Montagem Dinâmica do Prompt
-    st.markdown("**Prompt Gerado para IAs de Vídeo/Imagem:**")
-    
-    prompt_gerado = (
-        f"UGC style ad, 9:16 vertical video frame. {ALINE_CORE} "
-        f"Located in a {cenario_opcao.lower()}. She is wearing a {outfit}. "
-        f"Action: {hook_type.lower()}, featuring the product prominently in focus. "
-        f"Style: {enquadramento.lower()}, natural lighting, sharp details, realistic skin texture, high resolution."
-    )
-    
-    # Exibição do Prompt
-    st.code(prompt_gerado, language="markdown")
-    
-    # Simulador do Leitor/Player do TikTok (Preview Visual)
-    st.markdown("---")
-    st.markdown("**Simulação de Player (TikTok / Reels 9:16)**")
-    
-    with st.container():
-        st.markdown(
-            f"""
-            <div class="video-preview-box">
-                <p style="color: #a5b4fc; font-size: 12px; margin-bottom: 5px;">PREVIEW DA CENA</p>
-                <div style="height: 180px; background-color: #1f2937; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                    <span style="font-size: 30px;">🎬</span>
-                    <p style="font-size: 11px; color: #9ca3af; margin-top: 5px;">
-                        Modelo: <b>Aline</b><br>
-                        Ação: <b>{hook_type}</b><br>
-                        CTA: <b>{cta_choice}</b>
-                    </p>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
+    # Opções específicas para cada tipo de vídeo
+    if "Visão POV" in estilo_cena:
+        com_embalagem = st.checkbox("📦 Efeito Unboxing (Tirando o produto de dentro do saco plástico transparente)", value=True)
+        cenario_pov = st.selectbox(
+            "🛏️ Cenário de Fundo (POV):",
+            [
+                "Cama com edredom neutro e tapete felpudo branco",
+                "Chão de madeira clara com tapete felpudo branco (estilo TikTok)",
+                "Mesa minimalista de mármore com iluminação natural"
+            ]
         )
+        detalhes_maos = st.text_input(
+            "💅 Detalhes das Mãos & Acessórios:", 
+            value="Mãos com unhas compridas bem pintadas e decoradas, usando anéis delicados, pulseira e relógio"
+        )
+        outfit = ""
+    else:
+        com_embalagem = False
+        cenario_pov = ""
+        detalhes_maos = ""
+        outfit = st.text_input("👗 Vestuário da Aline:", value="Vestido preto justo de alça fina (conforme foto de referência)")
+
+    acao_video = st.text_input("✨ Ação Principal com o Produto:", placeholder="Ex: Mostrando o tecido, dobrando a peça, passando a mão levemente sobre o produto...")
+
+with col_output:
+    st.subheader("📋 Output do Prompt")
+    
+    # Construção Inteligente do Prompt
+    if "Visão POV" in estilo_cena:
+        prompt_parts = [
+            "POV first-person aesthetic video clip, 9:16 vertical video format.",
+            f"Top-down POV camera view showing only a woman's hands featuring {detalhes_maos.lower()}.",
+            f"The background is set on a {cenario_pov.lower()}."
+        ]
+        if com_embalagem:
+            prompt_parts.append(f"Her hands are opening a clear transparent plastic package/polybag and taking out a {produto_nome}.")
+        else:
+            prompt_parts.append(f"Her hands are gracefully displaying, touching, and holding a {produto_nome}.")
+            
+        if acao_video:
+            prompt_parts.append(f"Action: {acao_video}.")
+            
+        prompt_parts.append("Soft natural window lighting, clean viral aesthetic, ultra high resolution, sharp focus on product and hands.")
+    else:
+        if ref_image == "aline rosto.jpeg":
+            base_desc = f"Realistic vertical 9:16 video clip based on image reference 'aline rosto.jpeg'. Featuring 'Aline', a young Latina woman with long dark brown hair, warm tan skin, glossy nude lips, wearing a gold chain necklace and small gold hoop earrings."
+        else:
+            base_desc = f"Full-body realistic 9:16 video clip based on image reference 'aline corpo.jpeg'. Featuring 'Aline', wearing {outfit}, standing in a bright modern bedroom."
+        
+        prompt_parts = [
+            base_desc,
+            f"She is holding and presenting a {produto_nome} directly to the camera.",
+            f"Action: {acao_video if acao_video else 'smiling gently and showcasing the product features without speaking'}.",
+            "High resolution, sharp product focus, natural skin texture, soft indoor lighting."
+        ]
+
+    prompt_final = " ".join(prompt_parts)
+
+    st.markdown("**1. Imagem de Referência no GitHub:**")
+    st.code(ref_image, language="text")
+
+    st.markdown("**2. Prompt Otimizado para IA de Vídeo (Kling / Luma / Runway):**")
+    st.code(prompt_final, language="markdown")
+
+    st.markdown("---")
+    st.markdown("### 💡 Como Usar na Ferramenta de Vídeo")
+    if "Visão POV" in estilo_cena:
+        st.markdown("* Para vídeos **POV**, cole diretamente o prompt acima no gerador de texto-para-vídeo. A IA gerará a composição das mãos com o produto no cenário configurado.")
+    else:
+        st.markdown(f"* Baixe a foto **`{ref_image}`** do seu GitHub e insira como imagem inicial (Image-to-Video) na ferramenta de IA junto com o prompt gerado.")
