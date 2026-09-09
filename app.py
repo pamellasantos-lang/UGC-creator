@@ -1,30 +1,29 @@
 import os
 import streamlit as st
-from PIL import Image
 
-# Configuração da Página
+# Configuração da página
 st.set_page_config(
     page_title="UGC Studio - Aline",
     page_icon="🎬",
     layout="wide"
 )
 
-# Estilização CSS com Alto Contraste (Garantindo leitura perfeita de textos, campos e placeholders)
+# Estilização CSS de Alto Contraste + Simulador TikTok 9:16
 st.markdown("""
     <style>
-    /* Fundo Escuro Limpo */
+    /* Fundo Escuro Pro */
     .stApp {
-        background-color: #0E1117;
+        background-color: #0D1117;
         color: #F0F6FC;
     }
 
-    /* Labels e Textos Principais */
-    label, p, h1, h2, h3, h4, span {
+    /* Garantia de leitura para rótulos e textos */
+    label, p, h1, h2, h3, h4, span, div {
         color: #F0F6FC !important;
         font-weight: 500;
     }
 
-    /* Campos de Entrada (Inputs) */
+    /* Entradas de Texto e Modais */
     .stTextInput input, .stSelectbox div[data-baseweb="select"] {
         background-color: #161B22 !important;
         color: #FFFFFF !important;
@@ -32,48 +31,109 @@ st.markdown("""
         border-radius: 6px !important;
     }
 
-    /* Cor do Placeholder (Texto Exemplo de Fundo) */
+    /* Texto de Exemplo (Placeholder) visível */
     .stTextInput input::placeholder {
         color: #8B949E !important;
         opacity: 1 !important;
     }
 
-    /* Bloco de Código do Prompt - Corrigindo Fundo e Cor da Letra */
+    /* Bloco do Prompt (Caixa de Cópia em Alto Contraste) */
     div[data-testid="stCodeBlock"] pre {
         background-color: #161B22 !important;
         border: 1px solid #30363D !important;
         border-radius: 8px !important;
     }
     div[data-testid="stCodeBlock"] code {
-        color: #58A6FF !important; /* Azul brilhante de alto contraste */
-        font-family: 'Courier New', Courier, monospace !important;
-        font-size: 14px !important;
+        color: #38BDF8 !important; /* Azul Neon claro de altíssima leitura */
+        font-family: 'Fira Code', 'Courier New', monospace !important;
+        font-size: 13px !important;
+        line-height: 1.5 !important;
     }
 
-    /* Card de Preview Visual */
-    .preview-card {
-        background-color: #161B22;
-        border: 1px solid #30363D;
-        border-radius: 10px;
-        padding: 16px;
+    /* SIMULADOR TIKTOK 9:16 */
+    .phone-wrapper {
+        display: flex;
+        justify-content: center;
         margin-top: 10px;
+    }
+    .tiktok-card {
+        width: 270px;
+        height: 480px;
+        background: linear-gradient(180deg, #1F2937 0%, #111827 100%);
+        border: 4px solid #374151;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+    .tiktok-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: bold;
+        color: #38BDF8 !important;
+        border: 1px solid #38BDF8;
+    }
+    .tiktok-sidebar {
+        position: absolute;
+        right: 10px;
+        bottom: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    .tiktok-icon-btn {
+        background: rgba(0, 0, 0, 0.4);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    .tiktok-bottom {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 55px;
+    }
+    .shop-tag {
+        background: #FE2C55;
+        color: #FFFFFF !important;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 6px;
+    }
+    .tiktok-text {
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+        color: #E6EDF3 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Título
 st.title("🎬 UGC Studio - Aline")
-st.caption("Gerador de Prompts e Prévia Visual para Conteúdos no TikTok / Reels.")
+st.caption("Gerador de Prompts e Prévia Visual Otimizados para TikTok & Reels.")
 
 st.markdown("---")
 
-col_left, col_right = st.columns([1, 1], gap="large")
+col_left, col_right = st.columns([1.1, 1], gap="large")
 
 # ==========================================
-# COLUNA ESQUERDA: CONFIGURAÇÃO DOS CAMPOS
+# COLUNA ESQUERDA: CAMPOS DE ENTRADA
 # ==========================================
 with col_left:
-    st.subheader("⚙️ Parâmetros do Vídeo")
+    st.subheader("⚙️ Configurações da Cena")
 
     estilo_cena = st.selectbox(
         "🎥 Estilo do Vídeo:",
@@ -93,7 +153,7 @@ with col_left:
     )
 
     if "Visão POV" in estilo_cena:
-        ref_image_name = None
+        ref_image_name = "Nenhuma (Visão POV - Sem Rosto)"
         
         com_embalagem = st.checkbox(
             "📦 Efeito Unboxing (Retirando da embalagem plástica)",
@@ -140,12 +200,12 @@ with col_left:
     )
 
 # ==========================================
-# COLUNA DIREITA: OUTPUT E PREVIA VISUAL
+# COLUNA DIREITA: OUTPUT E SIMULADOR 9:16
 # ==========================================
 with col_right:
     st.subheader("📋 Output do Prompt")
 
-    # Construção do Prompt
+    # Montagem do Prompt Final
     if "Visão POV" in estilo_cena:
         prompt_parts = [
             "POV first-person aesthetic video clip, 9:16 vertical video format.",
@@ -173,31 +233,46 @@ with col_right:
     prompt_final = " ".join(prompt_parts)
 
     st.markdown("**1. Imagem de Referência no GitHub:**")
-    st.code(ref_image_name if ref_image_name else "Nenhuma (Visão POV - Sem Rosto)", language="text")
+    st.code(ref_image_name, language="text")
 
-    st.markdown("**2. Prompt Gerado (Para Kling AI / Luma / Runway):**")
+    st.markdown("**2. Prompt Otimizado (Pronto para Copiar):**")
     st.code(prompt_final, language="markdown")
 
     st.markdown("---")
-    st.subheader("🖼️ Prévia Visual da Cena")
+    st.subheader("📱 Simulador de Tela (TikTok / Reels 9:16)")
 
-    # Exibição de Imagem ou Mockup Visual de Prévia
-    if ref_image_name and os.path.exists(ref_image_name):
-        image = Image.open(ref_image_name)
-        st.image(image, caption=f"Imagem Base: {ref_image_name}", use_column_width=True)
-    else:
-        st.markdown(
-            f"""
-            <div class="preview-card">
-                <p style="color: #58A6FF; font-weight: bold; margin-bottom: 8px;">ESTRUTURA DA CENA PREVISTA (9:16)</p>
-                <ul>
-                    <li><b>Enquadramento:</b> {"Visão Primeira Pessoa (POV)" if "POV" in estilo_cena else "Modelo Físico (Aline)"}</li>
-                    <li><b>Elemento Principal:</b> {produto_nome if produto_nome else "Produto não informado"}</li>
-                    <li><b>Ambiente:</b> {cenario_pov if "POV" in estilo_cena else "Quarto/Ambiente Interno"}</li>
-                    <li><b>Efeito de Unboxing:</b> {"Ativado (Embalagem Plástica)" if com_embalagem else "Desativado"}</li>
-                    <li><b>Detalhes Visuais:</b> {detalhes_maos if "POV" in estilo_cena else outfit}</li>
-                </ul>
+    # Simulador Visual
+    prod_display = produto_nome if produto_nome else "Produto em Destaque"
+    acao_display = acao_video if acao_video else "Demonstração do Produto"
+    
+    st.markdown(
+        f"""
+        <div class="phone-wrapper">
+            <div class="tiktok-card">
+                <div class="tiktok-badge">PREVIEW 9:16</div>
+                
+                <div style="position: absolute; top: 40%; left: 10%; right: 10%; text-align: center;">
+                    <p style="font-size: 28px; margin-bottom: 5px;">🎬</p>
+                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">{"VISÃO POV (MÃOS)" if "POV" in estilo_cena else "MODELO ALINE"}</p>
+                    <p class="tiktok-text" style="font-size: 10px !important; color: #9CA3AF !important;">Foco: {prod_display}</p>
+                </div>
+
+                <!-- Botoes Laterais do TikTok -->
+                <div class="tiktok-sidebar">
+                    <div class="tiktok-icon-btn">❤️</div>
+                    <div class="tiktok-icon-btn">💬</div>
+                    <div class="tiktok-icon-btn">🔖</div>
+                    <div class="tiktok-icon-btn">↪️</div>
+                </div>
+
+                <!-- Legenda e Tag do Produto -->
+                <div class="tiktok-bottom">
+                    <div class="shop-tag">🛒 Loja • Compre Aqui</div>
+                    <p class="tiktok-text" style="font-weight: bold;">@aline.studio</p>
+                    <p class="tiktok-text" style="font-size: 10px !important;">Ação: {acao_display}</p>
+                </div>
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
