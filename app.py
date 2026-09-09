@@ -8,49 +8,73 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. Estilização CSS de Alto Contraste (Dark Theme Pro)
+# 2. Estilização CSS de Alta Visibilidade (Estúdio Claro Pro)
 st.markdown("""
     <style>
-    /* Fundo Escuro Pro */
+    /* Fundo Geral da Aplicação */
     .stApp {
-        background-color: #0D1117;
-        color: #F0F6FC;
+        background-color: #F8FAFC;
+        color: #0F172A;
     }
 
-    /* Rótulos de Texto e Títulos */
+    /* Rótulos e Títulos com Alto Contraste */
     label, p, h1, h2, h3, h4, span, div {
-        color: #F0F6FC !important;
-        font-weight: 500;
+        color: #0F172A !important;
+        font-weight: 600 !important;
     }
 
-    /* Caixas de Entrada (Inputs/Selects) com fundo escuro e texto limpo */
-    .stTextInput input, .stSelectbox div[data-baseweb="select"], .stTextArea textarea {
-        background-color: #161B22 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #30363D !important;
-        border-radius: 6px !important;
+    /* Campos de Entrada (Inputs, TextAreas) */
+    .stTextInput input, .stTextArea textarea {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        border: 2px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
     }
 
-    /* Texto do Placeholder (Exemplo de fundo dentro do campo) */
-    .stTextInput input::placeholder, .stTextArea textarea::placeholder {
-        color: #8B949E !important;
-        opacity: 1 !important;
-    }
-
-    /* Bloco do Prompt Formatado (Caixa de Cópia em Alto Contraste) */
-    div[data-testid="stCodeBlock"] pre {
-        background-color: #161B22 !important;
-        border: 1px solid #30363D !important;
+    /* Ajuste para Selectbox (Menu Dropdown) */
+    .stSelectbox div[data-baseweb="select"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #CBD5E1 !important;
         border-radius: 8px !important;
     }
+
+    /* CORREÇÃO CRÍTICA DO MENU SUSPENSO (POPOVER / DROPDOWN) */
+    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[role="listbox"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+    }
+    li[role="option"], div[data-baseweb="option"] {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        font-weight: 600 !important;
+    }
+    li[role="option"]:hover, div[data-baseweb="option"]:hover {
+        background-color: #E2E8F0 !important;
+        color: #0284C7 !important;
+    }
+
+    /* Texto de Exemplo (Placeholder) */
+    .stTextInput input::placeholder, .stTextArea textarea::placeholder {
+        color: #64748B !important;
+        opacity: 1 !important;
+        font-weight: 400 !important;
+    }
+
+    /* Caixa do Prompt Formatado (Dark Terminal para Cópia) */
+    div[data-testid="stCodeBlock"] pre {
+        background-color: #0F172A !important;
+        border: 2px solid #1E293B !important;
+        border-radius: 10px !important;
+    }
     div[data-testid="stCodeBlock"] code {
-        color: #38BDF8 !important; /* Azul Neon claro de altíssima leitura */
+        color: #38BDF8 !important; /* Azul Neon de alta leitura sobre fundo escuro */
         font-family: 'Fira Code', 'Courier New', monospace !important;
         font-size: 13px !important;
         line-height: 1.5 !important;
     }
 
-    /* SIMULADOR TIKTOK 9:16 */
+    /* SIMULADOR TIKTOK 9:16 (Celular Escuro em Destaque) */
     .phone-wrapper {
         display: flex;
         justify-content: center;
@@ -59,18 +83,18 @@ st.markdown("""
     .tiktok-card {
         width: 260px;
         height: 460px;
-        background: linear-gradient(180deg, #1F2937 0%, #111827 100%);
-        border: 4px solid #374151;
-        border-radius: 20px;
+        background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+        border: 4px solid #334155;
+        border-radius: 24px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     .tiktok-badge {
         position: absolute;
         top: 12px;
         left: 12px;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(15, 23, 42, 0.8);
         padding: 4px 8px;
         border-radius: 4px;
         font-size: 10px;
@@ -88,7 +112,7 @@ st.markdown("""
         gap: 12px;
     }
     .tiktok-icon-btn {
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.15);
         width: 32px;
         height: 32px;
         border-radius: 50%;
@@ -106,7 +130,7 @@ st.markdown("""
     .shop-tag {
         background: #FE2C55;
         color: #FFFFFF !important;
-        padding: 3px 8px;
+        padding: 4px 8px;
         border-radius: 4px;
         font-size: 10px;
         font-weight: bold;
@@ -117,14 +141,14 @@ st.markdown("""
         font-size: 11px !important;
         line-height: 1.2 !important;
         margin: 0 !important;
-        color: #E6EDF3 !important;
+        color: #F8FAFC !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # --- CABEÇALHO DO STUDIO ---
 st.title("🎬 UGC Ad Studio")
-st.caption("Estúdio de criação de prompts e roteiros para vídeos de produtos com múltiplos criadores.")
+st.caption("Estúdio de criação de prompts e roteiros para vídeos de produtos no TikTok / Reels com múltiplos criadores.")
 
 st.markdown("---")
 
@@ -147,7 +171,7 @@ with col_left:
             "Maya - Asian / Clean Beauty Minimalist",
             "Modelo Personalizado (Inserir descrição própria)"
         ],
-        help="(i) Escolha a modelo de referência para a campanha ou opte por 'Visão POV' para focar apenas em mãos e detalhes do produto."
+        help="(i) Escolha a modelo de referência para a campanha ou opte por 'Visão POV' para focar apenas nas mãos e detalhes do produto."
     )
 
     # Descrição do Perfil do Influencer selecionado
@@ -158,7 +182,7 @@ with col_left:
         desc_modelo = "First-person POV top-down perspective showing only a woman's hands with decorated long nails and delicate jewelry"
         ref_img_suggested = "Nenhuma (Foco apenas em mãos e superfície)"
     elif "Sarah" in perfil_modelo:
-        desc_modelo = "Sarah, a athletic 25-year-old blonde woman with natural makeup and glowing skin"
+        desc_modelo = "Sarah, an athletic 25-year-old blonde woman with natural makeup and glowing skin"
         ref_img_suggested = "sarah.jpeg"
     elif "Maya" in perfil_modelo:
         desc_modelo = "Maya, a stylish 22-year-old East Asian woman with sleek dark hair and elegant minimal aesthetic"
