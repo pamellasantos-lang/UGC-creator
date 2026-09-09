@@ -1,9 +1,8 @@
-import os
 import streamlit as st
 
 # 1. Configuração da página em Modo Wide
 st.set_page_config(
-    page_title="UGC Ad Studio - Multi-Creator",
+    page_title="UGC Ad Studio - Modular Prompt",
     page_icon="🎬",
     layout="wide"
 )
@@ -11,19 +10,14 @@ st.set_page_config(
 # 2. Estilização CSS de Alta Visibilidade (Estúdio Claro Pro)
 st.markdown("""
     <style>
-    /* Fundo Geral da Aplicação */
     .stApp {
         background-color: #F8FAFC;
         color: #0F172A;
     }
-
-    /* Rótulos e Títulos com Alto Contraste */
     label, p, h1, h2, h3, h4, span, div {
         color: #0F172A !important;
         font-weight: 600 !important;
     }
-
-    /* Campos de Entrada (Inputs, TextAreas) */
     .stTextInput input, .stTextArea textarea {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -31,15 +25,11 @@ st.markdown("""
         border-radius: 8px !important;
         font-size: 14px !important;
     }
-
-    /* Ajuste para Selectbox (Menu Dropdown) */
     .stSelectbox div[data-baseweb="select"] {
         background-color: #FFFFFF !important;
         border: 2px solid #CBD5E1 !important;
         border-radius: 8px !important;
     }
-
-    /* CORREÇÃO CRÍTICA DO MENU SUSPENSO (POPOVER / DROPDOWN) */
     div[data-baseweb="popover"], div[data-baseweb="menu"], ul[role="listbox"] {
         background-color: #FFFFFF !important;
         border: 1px solid #CBD5E1 !important;
@@ -53,28 +43,22 @@ st.markdown("""
         background-color: #E2E8F0 !important;
         color: #0284C7 !important;
     }
-
-    /* Texto de Exemplo (Placeholder) */
     .stTextInput input::placeholder, .stTextArea textarea::placeholder {
         color: #64748B !important;
         opacity: 1 !important;
         font-weight: 400 !important;
     }
-
-    /* Caixa do Prompt Formatado (Dark Terminal para Cópia) */
     div[data-testid="stCodeBlock"] pre {
         background-color: #0F172A !important;
         border: 2px solid #1E293B !important;
         border-radius: 10px !important;
     }
     div[data-testid="stCodeBlock"] code {
-        color: #38BDF8 !important; /* Azul Neon de alta leitura sobre fundo escuro */
+        color: #38BDF8 !important;
         font-family: 'Fira Code', 'Courier New', monospace !important;
         font-size: 13px !important;
         line-height: 1.5 !important;
     }
-
-    /* SIMULADOR TIKTOK 9:16 (Celular Escuro em Destaque) */
     .phone-wrapper {
         display: flex;
         justify-content: center;
@@ -82,7 +66,7 @@ st.markdown("""
     }
     .tiktok-card {
         width: 260px;
-        height: 460px;
+        height: 450px;
         background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
         border: 4px solid #334155;
         border-radius: 24px;
@@ -146,212 +130,168 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- CABEÇALHO DO STUDIO ---
-st.title("🎬 UGC Ad Studio")
-st.caption("Estúdio de criação de prompts e roteiros para vídeos de produtos no TikTok / Reels com múltiplos criadores.")
+# Cabeçalho
+st.title("🎬 UGC Ad Studio - Gerador Modular")
+st.caption("Crie prompts focados em ações e cenários para usar combinados com fotos do seu Personagem + Produto.")
 
 st.markdown("---")
 
-# --- LAYOUT EM 3 COLUNAS PARALELAS ---
 col_left, col_mid, col_right = st.columns([1, 1.1, 1], gap="medium")
 
 # ==========================================
-# COLUNA 1: INPUTS BÁSICOS & MODELO
+# COLUNA 1: ENQUADRAMENTO E MÍDIA BASE
 # ==========================================
 with col_left:
-    st.subheader("👤 Modelo & Produto")
+    st.subheader("🎯 Formato & Produto")
 
-    # Seleção Flexível de Criadores
-    perfil_modelo = st.selectbox(
-        "Selecione o Criador / Influencer:",
+    tipo_plano = st.selectbox(
+        "Perspectiva da Câmera:",
         [
-            "Aline - Latina / Brunette Lifestyle",
-            "Visão POV - Mãos & Unboxing (Sem Rosto)",
-            "Sarah - Blonde / Fitness & Wellness",
-            "Maya - Asian / Clean Beauty Minimalist",
-            "Modelo Personalizado (Inserir descrição própria)"
+            "Visão POV (Apenas Mãos em Primeira Pessoa)",
+            "Modelo em Cena - Close-up (Rosto / Busto)",
+            "Modelo em Cena - Corpo Inteiro (Lifestyle)",
+            "Selfie no Espelho / Câmera Frontal"
         ],
-        help="(i) Escolha a modelo de referência para a campanha ou opte por 'Visão POV' para focar apenas nas mãos e detalhes do produto."
+        help="(i) Define se o vídeo focará apenas nas mãos (POV) ou na personagem inteira."
     )
 
-    # Descrição do Perfil do Influencer selecionado
-    if "Aline" in perfil_modelo:
-        desc_modelo = "Aline, a young Latina woman (approx. 24) with long dark brown hair, warm tan skin, glossy nude lips, gold chain necklace"
-        ref_img_suggested = "aline rosto.jpeg / aline corpo.jpeg"
-    elif "POV" in perfil_modelo:
-        desc_modelo = "First-person POV top-down perspective showing only a woman's hands with decorated long nails and delicate jewelry"
-        ref_img_suggested = "Nenhuma (Foco apenas em mãos e superfície)"
-    elif "Sarah" in perfil_modelo:
-        desc_modelo = "Sarah, an athletic 25-year-old blonde woman with natural makeup and glowing skin"
-        ref_img_suggested = "sarah.jpeg"
-    elif "Maya" in perfil_modelo:
-        desc_modelo = "Maya, a stylish 22-year-old East Asian woman with sleek dark hair and elegant minimal aesthetic"
-        ref_img_suggested = "maya.jpeg"
-    else:
-        desc_modelo = st.text_input(
-            "Descreva o Modelo Personalizado:",
-            placeholder="Ex: Homem de 30 anos, estilo casual...",
-            help="(i) Digite as características físicas do modelo que a IA deve gerar."
-        )
-        ref_img_suggested = "foto_modelo_custom.jpeg"
-
-    # Upload da Foto do Produto
-    st.write("**Foto do Produto**")
-    uploaded_product = st.file_uploader(
-        "Arraste a foto do produto aqui",
-        type=["png", "jpg", "jpeg"],
-        help="(i) Faça o upload da imagem do produto que você deseja divulgar."
-    )
-    if uploaded_product:
-        st.image(uploaded_product, caption="Produto Carregado", use_column_width=True)
-
-    # Estilo de Enquadramento
-    enquadramento = st.radio(
-        "Foco de Enquadramento:",
-        ["Close-up (Rosto / Mão)", "Corpo Inteiro (Lifestyle)", "POV / Plano Aberto (Mãos & Superfície)"],
-        help="(i) Define o ângulo da câmera: focado no rosto, no corpo inteiro ou na visão das mãos em primeira pessoa."
+    produto_nome = st.text_input(
+        "Nome / Categoria do Produto:",
+        placeholder="Ex: Pijama de coração, Sérum facial, Garrafa térmica...",
+        help="(i) Identificação do produto para contextualizar no prompt."
     )
 
-    # Tom da Campanha
-    tom_campanha = st.selectbox(
-        "Tom da Campanha:",
-        ["Viral / Orgânico do TikTok", "Review Autêntico e Espontâneo", "Estética Luxuosa / Minimalista"],
-        help="(i) Ajusta a iluminação e o ritmo visual do vídeo."
+    embalagem_efeito = st.checkbox(
+        "Efeito Unboxing (Saco plástico transparente)",
+        value=False,
+        help="(i) Ative para incluir a ação de abrir ou retirar o produto de uma embalagem plástica."
     )
 
+    ferramenta_destino = st.selectbox(
+        "Ferramenta de IA Destino:",
+        [
+            "Kling AI / Luma Dream Machine (Vídeo Direto)",
+            "Midjourney / Flux (Para criar Imagem Base primeiro)",
+            "Runway Gen-3 / Hailuo AI"
+        ],
+        help="(i) Ajusta a estrutura das instruções conforme a IA que você utilizará."
+    )
 
 # ==========================================
-# COLUNA 2: WORKFLOW DE CONTEÚDO
+# COLUNA 2: AMBIENTE E AÇÕES
 # ==========================================
 with col_mid:
-    st.subheader("⚡ Workflow de Conteúdo")
+    st.subheader("⚡ Cenario & Ação")
 
-    # Nome do Produto
-    produto_nome = st.text_input(
-        "Nome / Descrição do Produto:",
-        placeholder="Ex: Camiseta amarela, Pijama de coração, Sérum facial...",
-        help="(i) Escreva o nome exato do produto que aparecerá nas mãos do criador."
-    )
-
-    # 1. Gancho (Hook)
-    st.markdown("#### 1. Gancho (Hook)")
-    hook_type = st.selectbox(
-        "Tipo de Gancho Inicial:",
-        [
-            "Segurando e apresentando o produto surpresa para a câmera",
-            "Tirando o produto de um saco plástico transparente (Efeito Unboxing)",
-            "Aplicando / Testando o produto diretamente em cena",
-            "Mostrando a textura e detalhes do produto bem de perto"
-        ],
-        help="(i) Escolha a primeira ação nos 3 primeiros segundos do vídeo para prender a atenção do público."
-    )
-
-    # 2. Prova / Demonstração (Proof)
-    st.markdown("#### 2. Prova / Demonstração (Proof)")
     cenario = st.selectbox(
-        "Cenário / Ambientação:",
+        "Ambiente / Cenário:",
         [
             "Cama com edredom neutro e tapete felpudo branco",
-            "Quarto moderno bem iluminado com luz natural de janela",
-            "Penteadeira / Banheiro luxuoso com espelho iluminado",
-            "Mesa minimalista de mármore com estética limpa"
+            "Quarto moderno e iluminado com luz de janela",
+            "Penteadeira / Banheiro de luxo com espelho",
+            "Mesa minimalista de mármore",
+            "Ambiente interno neutro com fundo suavemente desfocado"
         ],
-        help="(i) Selecione onde o vídeo será gravado."
+        help="(i) Local onde a cena acontece."
     )
 
-    if "POV" in perfil_modelo:
-        detalhes_estilo = st.text_input(
-            "Estilo das Mãos / Acessórios:",
-            value="Mãos com unhas compridas decoradas, anéis delicados e pulseira",
-            help="(i) Detalhes visuais das mãos para garantir o visual estético no vídeo."
+    iluminacao = st.selectbox(
+        "Iluminação / Clima Visual:",
+        [
+            "Luz natural e suave de janela (Soft Window Light)",
+            "Iluminação de estúdio limpa e brilhante",
+            "Luz quente e aconchegante de fim de tarde"
+        ]
+    )
+
+    if "POV" in tipo_plano:
+        detalhes_membro = st.text_input(
+            "Detalhes das Mãos:",
+            value="Mãos femininas com unhas longas decoradas e anéis delicados",
+            help="(i) Características visuais das mãos que interagem com o produto."
         )
     else:
-        detalhes_estilo = st.text_input(
-            "Vestuário do Criador (Outfit):",
-            value="Vestido preto justo de alça fina",
-            help="(i) Roupa ou estilo que o criador usará no vídeo."
+        detalhes_membro = st.text_input(
+            "Estilo de Roupa da Personagem:",
+            value="Roupa casual e neutra",
+            help="(i) Vestuário para harmonizar com a cena."
         )
 
-    acao_principal = st.text_input(
-        "Ação Principal na Demonstração:",
-        placeholder="Ex: Virando o produto, dobrando o tecido, passando a mão levemente...",
-        help="(i) Descreva o movimento do criador ao demonstrar o produto durante o vídeo."
+    acao_dinamica = st.text_input(
+        "Ação Principal com o Produto:",
+        placeholder="Ex: Segurando com cuidado, dobrando o tecido, virando o rótulo...",
+        help="(i) Movimento exato que deve ocorrer na animação."
     )
 
-    # 3. Chamada para Ação (CTA)
-    st.markdown("#### 3. Chamada para Ação (CTA)")
     cta_choice = st.radio(
-        "Botão de Chamada Final:",
-        ["Shop Now 🛒", "Learn More 🔗", "Try It Today ✨", "Get Yours 🎁"],
-        horizontal=True,
-        help="(i) Selecione o texto e o estilo do botão de conversão no final do vídeo."
+        "Botão de CTA (TikTok Preview):",
+        ["Compre Aqui 🛒", "Saiba Mais 🔗", "Ganta o Seu 🎁"],
+        horizontal=True
     )
-
 
 # ==========================================
-# COLUNA 3: OUTPUT E PREVIEW 9:16
+# COLUNA 3: PROMPT GERADO E TIKTOK PREVIEW
 # ==========================================
 with col_right:
-    st.subheader("📱 Preview & Output")
+    st.subheader("📋 Prompt Pronto para Copiar")
 
-    # Montagem Dinâmica do Prompt Otimizado
-    prompt_parts = [
-        "UGC style vertical 9:16 video clip.",
-        f"Featuring {desc_modelo}."
-    ]
+    # Estrutura modular sem prescrever a identidade exata da modelo no texto
+    prompt_elements = []
 
-    if "POV" in perfil_modelo:
-        prompt_parts.append(f"Set on a {cenario.lower()}.")
-        prompt_parts.append(f"Action: {hook_type.lower()} with the {produto_nome if produto_nome else 'product'}.")
+    if "POV" in tipo_plano:
+        prompt_elements.append("Aesthetic 9:16 vertical video clip, top-down POV first-person perspective.")
+        prompt_elements.append(f"Featuring {detalhes_membro.lower()} interacting directly with the product shown in the attached reference image ({produto_nome if produto_nome else 'product'}).")
+        
+        if embalagem_efeito:
+            prompt_elements.append("The hands are carefully taking the item out of a clear transparent plastic package.")
+        else:
+            prompt_elements.append(f"Action: {acao_dinamica if acao_dinamica else 'gracefully displaying and touching the product'}.")
+            
+        prompt_elements.append(f"Set on a {cenario.lower()}.")
+
     else:
-        prompt_parts.append(f"Wearing {detalhes_estilo}. Located in a {cenario.lower()}.")
-        prompt_parts.append(f"Action: {hook_type.lower()} holding {produto_nome if produto_nome else 'the product'}.")
+        prompt_elements.append("Realistic 9:16 vertical video clip.")
+        prompt_elements.append(f"Featuring the character from the attached reference image wearing {detalhes_membro.lower()}, holding and presenting the product from the second reference image ({produto_nome if produto_nome else 'product'}).")
+        
+        if embalagem_efeito:
+            prompt_elements.append("Action: Opening a clear plastic polybag package to show the product inside.")
+        else:
+            prompt_elements.append(f"Action: {acao_dinamica if acao_dinamica else 'smiling gently and showing the product directly to the camera'}.")
+            
+        prompt_elements.append(f"Setting: {cenario.lower()}.")
 
-    if acao_principal:
-        prompt_parts.append(f"Demonstration movement: {acao_principal}.")
+    prompt_elements.append(f"{iluminacao}, sharp product focus, ultra high resolution, clean commercial UGC aesthetic.")
 
-    prompt_parts.append(f"Framing: {enquadramento.lower()}, {tom_campanha.lower()}, soft natural window light, sharp product focus, ultra high resolution.")
+    prompt_final = " ".join(prompt_elements)
 
-    prompt_final = " ".join(prompt_parts)
+    st.markdown("**Instruções de Anexo na IA:**")
+    st.info("📎 **Imagem 1:** Foto da Personagem / Mãos\n\n📎 **Imagem 2:** Foto do Produto")
 
-    st.markdown("**1. Imagem de Referência para a IA:**")
-    st.code(ref_img_suggested, language="text")
-
-    st.markdown("**2. Prompt Otimizado (Pronto para Copiar):**")
+    st.markdown("**Prompt Gerado:**")
     st.code(prompt_final, language="markdown")
 
     st.markdown("---")
-    st.markdown("**3. Simulador de Tela (TikTok / Reels 9:16)**")
-
-    # Informações para o Simulador Visual
-    prod_label = produto_nome if produto_nome else "Produto em Destaque"
-    criador_label = perfil_modelo.split("-")[0].strip()
+    st.markdown("**Simulador de Tela (TikTok 9:16)**")
 
     st.markdown(
         f"""
         <div class="phone-wrapper">
             <div class="tiktok-card">
                 <div class="tiktok-badge">PREVIEW 9:16</div>
-                
                 <div style="position: absolute; top: 38%; left: 10%; right: 10%; text-align: center;">
                     <p style="font-size: 26px; margin-bottom: 5px;">🎬</p>
-                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">{criador_label.upper()}</p>
-                    <p class="tiktok-text" style="font-size: 10px !important; color: #9CA3AF !important;">Foco: {prod_label}</p>
+                    <p class="tiktok-text" style="font-weight: bold; color: #38BDF8 !important;">CENA DINÂMICA</p>
+                    <p class="tiktok-text" style="font-size: 10px !important; color: #9CA3AF !important;">{produto_nome if produto_nome else 'Produto'}</p>
                 </div>
-
-                <!-- Botões Laterais Interativos do TikTok -->
                 <div class="tiktok-sidebar">
                     <div class="tiktok-icon-btn">❤️</div>
                     <div class="tiktok-icon-btn">💬</div>
                     <div class="tiktok-icon-btn">🔖</div>
-                    <div class="tiktok-icon-btn">↪️</div>
                 </div>
-
-                <!-- Tag e Legenda do Produto -->
                 <div class="tiktok-bottom">
-                    <div class="shop-tag">🛒 {cta_choice}</div>
-                    <p class="tiktok-text" style="font-weight: bold;">@{criador_label.lower().replace(' ', '')}.studio</p>
-                    <p class="tiktok-text" style="font-size: 10px !important; color: #D1D5DB !important;">Gancho: {hook_type[:35]}...</p>
+                    <div class="shop-tag">{cta_choice}</div>
+                    <p class="tiktok-text" style="font-weight: bold;">@ugc.studio</p>
+                    <p class="tiktok-text" style="font-size: 10px !important; color: #D1D5DB !important;">Plano: {tipo_plano.split('-')[0]}</p>
                 </div>
             </div>
         </div>
