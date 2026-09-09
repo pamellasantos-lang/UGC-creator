@@ -2,7 +2,7 @@ import streamlit as st
 
 # 1. Configuração da página em Modo Wide
 st.set_page_config(
-    page_title="UGC Ad Studio - Modular Prompt",
+    page_title="UGC Ad Studio - Gerador Modular",
     page_icon="🎬",
     layout="wide"
 )
@@ -142,7 +142,7 @@ col_left, col_mid, col_right = st.columns([1, 1.1, 1], gap="medium")
 # COLUNA 1: ENQUADRAMENTO E MÍDIA BASE
 # ==========================================
 with col_left:
-    st.subheader("🎯 Formato & Produto")
+    st.subheader("🎯 Formato & Ferramentas")
 
     tipo_plano = st.selectbox(
         "Perspectiva da Câmera:",
@@ -168,20 +168,23 @@ with col_left:
     )
 
     ferramenta_destino = st.selectbox(
-        "Ferramenta de IA Destino:",
+        "Ferramenta de IA Destino (Foco Gratuito):",
         [
-            "Kling AI / Luma Dream Machine (Vídeo Direto)",
-            "Midjourney / Flux (Para criar Imagem Base primeiro)",
-            "Runway Gen-3 / Hailuo AI"
+            "Meta AI / WhatsApp AI (100% Gratuito)",
+            "Google Flow / Veo (Gratuito / Acesso Grátis)",
+            "Kling AI (Créditos Diários Grátis)",
+            "Luma Dream Machine (Créditos Grátis)",
+            "Runway Gen-3 / Hailuo AI (Testes Grátis)",
+            "Flux / Midjourney (Criação de Imagem Base)"
         ],
-        help="(i) Ajusta a estrutura das instruções conforme a IA que você utilizará."
+        help="(i) Selecione a plataforma. Destaque para opções 100% gratuitas ou com renovação diária sem custo."
     )
 
 # ==========================================
 # COLUNA 2: AMBIENTE E AÇÕES
 # ==========================================
 with col_mid:
-    st.subheader("⚡ Cenario & Ação")
+    st.subheader("⚡ Cenário & Ação")
 
     cenario = st.selectbox(
         "Ambiente / Cenário:",
@@ -235,7 +238,7 @@ with col_mid:
 with col_right:
     st.subheader("📋 Prompt Pronto para Copiar")
 
-    # Estrutura modular sem prescrever a identidade exata da modelo no texto
+    # Montagem das instruções do prompt
     prompt_elements = []
 
     if "POV" in tipo_plano:
@@ -264,8 +267,16 @@ with col_right:
 
     prompt_final = " ".join(prompt_elements)
 
-    st.markdown("**Instruções de Anexo na IA:**")
-    st.info("📎 **Imagem 1:** Foto da Personagem / Mãos\n\n📎 **Imagem 2:** Foto do Produto")
+    # Dicas de uso conforme a ferramenta gratuita escolhida
+    st.markdown("**Como Aplicar na Ferramenta Selecionada:**")
+    if "WhatsApp" in ferramenta_destino:
+        st.info("💬 **Meta AI / WhatsApp AI:** Abra a conversa com a Meta AI no WhatsApp, envie a foto e cole este prompt iniciando com o comando `/imagine` ou enviando a instrução direta de animação.")
+    elif "Google Flow" in ferramenta_destino:
+        st.info("🌐 **Google Flow / Veo:** Acesse o painel da ferramenta, insira a foto do personagem como imagem base e cole o prompt para animar de graça.")
+    elif "Kling" in ferramenta_destino or "Luma" in ferramenta_destino:
+        st.info("🎁 **Kling / Luma:** Faça login diariamente para resgatar os créditos gratuitos, anexe a foto da modelo + produto e cole o prompt abaixo.")
+    else:
+        st.info("📎 **Instruções Gerais:** Anexe a Foto 1 (Personagem/Mãos) + Foto 2 (Produto) e cole o prompt abaixo.")
 
     st.markdown("**Prompt Gerado:**")
     st.code(prompt_final, language="markdown")
