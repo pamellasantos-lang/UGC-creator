@@ -64,7 +64,7 @@ st.markdown("""
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts unificados em português com unboxing, calçados, trocas de cores, transições e CTA fixo apontando para baixo.")
+st.caption("Crie prompts unificados em português para vídeos 100% silenciosos (sem fala), unboxing, transições e indicação natural apontando para baixo.")
 
 st.markdown("---")
 
@@ -107,7 +107,7 @@ with col_left:
             "Modelo em Cena - Corpo Inteiro (Lifestyle)",
             "Selfie no Espelho / Câmera Frontal"
         ],
-        help="(i) Selecione o estilo do vídeo desejado. Inclui opções de calçados e demonstração de múltiplas cores."
+        help="(i) Selecione o estilo do vídeo desejado. Todos os vídeos são configurados para serem sem fala."
     )
 
     if "Showcase Model" in tipo_plano:
@@ -195,7 +195,7 @@ with col_mid:
     )
 
     st.markdown("---")
-    st.info("🛒 **CTA Fixo:** A chamada para ação está travada para a modelo/mãos apontarem para baixo no final do vídeo ('Compre Aqui 👇').")
+    st.info("🤐 **Vídeo 100% Sem Fala:** A modelo apenas demonstra o produto visualmente.\n\n👇 **Final do Vídeo:** A modelo olha para a câmera, sorri e aponte com as mãos para baixo (sem botões ou elementos gráficos).")
 
 # ==========================================
 # COLUNA 3: OUTPUT DO PROMPT UNIFICADO
@@ -205,11 +205,11 @@ with col_right:
 
     prompt_unificado = []
 
-    # 1. Formato e Ritmo
+    # 1. Formato, Ritmo e Ausência de Fala
     if "Foto" in tipo_midia:
         prompt_unificado.append("Fotografia comercial de produto em alta resolução, proporção vertical 9:16.")
     else:
-        prompt_unificado.append("Vídeo clipe vertical 9:16 ultra-realista e contínuo no estilo UGC viral do TikTok.")
+        prompt_unificado.append("Vídeo clipe vertical 9:16 ultra-realista e contínuo no estilo UGC do TikTok, totalmente silencioso (sem fala), focado apenas na demonstração visual.")
 
     if "Câmera Lenta" in ritmo_duracao:
         prompt_unificado.append("Movimentos de câmera e ações em câmera lenta (slow motion 0.5x), estendendo a duração da cena e mantendo fluidez pausada.")
@@ -224,12 +224,12 @@ with col_right:
             f"de dentro da caixa e girando a peça lentamente nas mãos para mostrar em close-up o design, textura, costuras, solado e detalhes do modelo. "
             f"NA SEQUÊNCIA, HÁ UMA TRANSIÇÃO COM CORTE RÁPIDO para a modelo vestindo o(a) mesmo(a) {produto_nome if produto_nome else 'sapato/tênis'} "
             f"em pé em frente ao espelho de corpo inteiro. A câmera faz um zoom aproximado focado nos pés para mostrar o calçado no pé, "
-            f"enquanto ela gira levemente o tornozelo exibindo a peça em uso."
+            f"enquanto ela gira levemente o tornozelo exibindo a peça em uso sem falar."
         )
 
     elif "Múltiplas Cores" in tipo_plano:
         prompt_unificado.append(
-            f"Vídeo de exibição de produto com CÂMERA FIXA em tripé focada na modelo em {cenario.lower()}, olhando para a câmera e sorrindo "
+            f"Vídeo de exibição de produto sem fala com CÂMERA FIXA em tripé focada na modelo em {cenario.lower()}, olhando para a câmera e sorrindo "
             f"enquanto passa a mão suavemente pelo corpo mostrando o caimento do(a) {produto_nome if produto_nome else 'roupa/conjunto'}. "
             f"O VÍDEO CONTÉM TRANSIÇÕES RÁPIDAS E FLUIDAS (JUMP CUTS) onde a modelo permanece na mesma posição e enquadramento, "
             f"mas alternando consecutivamente entre as diferentes variações de cores da mesma peça apresentadas nas imagens de referência anexadas, "
@@ -243,18 +243,18 @@ with col_right:
             f"de dentro e arrumando a peça sobre {cenario.lower()}, exatamente como mostrado na foto de referência. "
             f"EM SEGUIDA, HÁ UMA TRANSIÇÃO COM CORTE RÁPIDO (JUMP CUT) onde a modelo da foto de referência aparece vestindo "
             f"o(a) mesmo(a) {produto_nome if produto_nome else 'produto'}, gravando um vídeo de selfie no espelho de corpo inteiro com seu smartphone. "
-            f"Ela se vira suavemente mostrando o caimento do produto e o ajuste no corpo."
+            f"Ela se vira suavemente mostrando o caimento do produto e o ajuste no corpo sem falar."
         )
 
     elif "Showcase Model" in tipo_plano:
         prompt_unificado.append(
-            f"A CENA COMEÇA com um movimento dinâmico de câmera em 360 graus girando lentamente ao redor da personagem vestindo {detalhes_membro.lower()}. "
+            f"A CENA COMEÇA com um movimento dinâmico de câmera em 360 graus girando lentamente ao redor da personagem vestindo {detalhes_membro.lower()} sem fala. "
             f"A CÂMERA ENTÃO APROXIMA EM ZOOM LENTO para mostrar em close-up a textura do tecido, costuras, acabamento e detalhes de perto do(a) {produto_nome if produto_nome else 'produto'}."
         )
 
     elif "POV" in tipo_plano:
         prompt_unificado.append(
-            f"Perspectiva em primeira pessoa (POV) vista de cima em ritmo lento apresentando {detalhes_membro.lower()} interagindo com a peça. "
+            f"Perspectiva em primeira pessoa (POV) vista de cima em ritmo lento apresentando {detalhes_membro.lower()} interagindo com a peça sem fala. "
         )
         if embalagem_efeito:
             prompt_unificado.append(
@@ -271,7 +271,7 @@ with col_right:
 
     else:
         prompt_unificado.append(
-            f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()} e mostrando o(a) {produto_nome if produto_nome else 'produto'}. "
+            f"Apresentando a personagem da imagem de referência vestindo {detalhes_membro.lower()} e mostrando o(a) {produto_nome if produto_nome else 'produto'} semfala. "
         )
         if embalagem_efeito:
             prompt_unificado.append(
@@ -281,28 +281,33 @@ with col_right:
         elif acao_dinamica:
             prompt_unificado.append(f"Ação: {acao_dinamica}.")
 
-    # 3. CTA Visual Fixo no Final (Sem opção de alteração)
-    prompt_unificado.append(
-        "NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, a cena faz uma pausa sutil e traz um gesto/indicação visual direta "
-        "apontando claramente para a parte inferior central da tela (direcionando o olhar para baixo em direção ao botão de compra do TikTok Shop) "
-        "com indicação de seta e legenda dizendo 'Compre Aqui 👇'."
-    )
+    # 3. Finalização da Ação: Modelo/Mãos apontando para baixo sorrindo (sem botões ou elementos gráficos)
+    if "POV" in tipo_plano and "Transição" not in tipo_plano and "Sapato" not in tipo_plano:
+        prompt_unificado.append(
+            "NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, as mãos fazem um gesto simples e natural apontando suavemente para a parte inferior da tela, "
+            "sem qualquer fala, voz, texto, legenda, botão ou elemento gráfico na imagem."
+        )
+    else:
+        prompt_unificado.append(
+            "NOS ÚLTIMOS 2 SEGUNDOS DO VÍDEO, a modelo olha diretamente para a câmera, sorri de forma natural e faz um gesto simples "
+            "apontando com as mãos para a parte inferior da tela, sem qualquer fala, voz, texto, legenda, botão ou elemento gráfico na imagem."
+        )
 
-    # 4. Finalização de Qualidade e Ambiente
+    # 4. Finalização de Qualidade e Estilo
     prompt_unificado.append(
-        f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, ultra alta resolução, estética comercial limpa estilo UGC."
+        f"Cenário: {cenario.lower()}. {iluminacao}, foco nítido no produto, vídeo 100% silencioso (sem fala e sem textos em tela), ultra alta resolução, estética comercial limpa estilo UGC."
     )
 
     prompt_completo_texto = " ".join(prompt_unificado)
 
     # Exibição do Prompt
-    st.markdown("**Prompt Único (Sequência Completa + Ação + Detalhes + CTA Fixo Apontando para Baixo):**")
+    st.markdown("**Prompt Unificado (Sem Fala + Apontando para Baixo no Final):**")
     st.code(prompt_completo_texto, language="markdown")
 
     # Orientação de Aplicação
     st.info(
-        "💡 **Como Usar este Prompt Unificado:**\n\n"
-        "1. **Para Sapatos:** Anexe a foto da caixa/sapato e a foto da modelo com o sapato no pé.\n"
-        "2. **Para Múltiplas Cores:** Anexe a foto principal da modelo e as fotos de todas as cores disponíveis da mesma roupa.\n"
-        "3. Cole todo o texto gerado acima na sua IA de vídeo (Kling AI, Luma, Google Flow, Meta AI)."
+        "💡 **Como Usar este Prompt:**\n\n"
+        "1. Anexe as imagens de referência do produto/modelo na sua ferramenta de IA de vídeo (Kling AI, Luma, Google Flow, Meta AI).\n"
+        "2. Cole o texto do código acima em um único campo de prompt.\n"
+        "3. O comando garante um vídeo sem fala com encerramento natural da modelo sorrindo e apontando para baixo."
     )
