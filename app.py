@@ -64,7 +64,7 @@ st.markdown("""
 
 # Cabeçalho
 st.title("🎬 UGC Ad Studio - Gerador Modular")
-st.caption("Crie prompts unificados em português com unboxing, transições, zoom de detalhes e CTA fixo apontando para baixo.")
+st.caption("Crie prompts unificados em português com unboxing, calçados, trocas de cores, transições e CTA fixo apontando para baixo.")
 
 st.markdown("---")
 
@@ -99,16 +99,18 @@ with col_left:
         "Perspectiva / Estilo da Câmera:",
         [
             "Transição Viral - Unboxing na Cama ➔ Provador no Espelho (Try-On)",
+            "Showcase de Sapato - Unboxing da Caixa ➔ Teste no Pé (POV + Espelho)",
+            "Showcase Múltiplas Cores - Troca Rápida de Cores da Mesma Peça",
             "Visão POV (Apenas Mãos em Primeira Pessoa)",
             "Showcase Model - Câmera 360° em Volta (Giro + Zooms de Detalhes da Peça)",
             "Modelo em Cena - Close-up (Rosto / Busto)",
             "Modelo em Cena - Corpo Inteiro (Lifestyle)",
             "Selfie no Espelho / Câmera Frontal"
         ],
-        help="(i) 'Transição Viral' cria um vídeo duplo: unboxing seguido de um corte rápido da modelo vestindo o look no espelho."
+        help="(i) Selecione o estilo do vídeo desejado. Inclui opções de calçados e demonstração de múltiplas cores."
     )
 
-    if "Showcase" in tipo_plano:
+    if "Showcase Model" in tipo_plano:
         tipo_peca = st.selectbox(
             "Foco Principal do Zoom / Peça:",
             [
@@ -124,15 +126,18 @@ with col_left:
 
     produto_nome = st.text_input(
         "Nome / Categoria do Produto:",
-        placeholder="Ex: Conjunto de Pijama de Coração, Camiseta Oversized...",
+        placeholder="Ex: Tênis Esportivo, Pijama de Coração, Camiseta Básica...",
         help="(i) Identificação do produto para contextualizar no prompt."
     )
 
-    embalagem_efeito = st.checkbox(
-        "Efeito Unboxing (Rasgar embalagem plástica e posicionar na cama)",
-        value=True,
-        help="(i) Ative para incluir a ação das mãos rasgando a embalagem plástica, tirando a peça e arrumando-a na cama."
-    )
+    if "Sapato" in tipo_plano or "Múltiplas Cores" in tipo_plano:
+        embalagem_efeito = False
+    else:
+        embalagem_efeito = st.checkbox(
+            "Efeito Unboxing (Rasgar embalagem plástica e posicionar na cama)",
+            value=True,
+            help="(i) Ative para incluir a ação das mãos rasgando a embalagem plástica, tirando a peça e arrumando-a na cama."
+        )
 
     ferramenta_destino = st.selectbox(
         "Ferramenta de IA Destino:",
@@ -173,7 +178,7 @@ with col_mid:
         ]
     )
 
-    if "POV" in tipo_plano or "Transição" in tipo_plano:
+    if "POV" in tipo_plano or "Transição" in tipo_plano or "Sapato" in tipo_plano:
         detalhes_membro = st.text_input(
             "Detalhes das Mãos:",
             value="mãos femininas com unhas compridas decoradas, anéis delicados e pulseira"
@@ -186,7 +191,7 @@ with col_mid:
 
     acao_dinamica = st.text_input(
         "Ação Complementar:",
-        placeholder="Ex: se virando suavemente no espelho, mostrando o tecido de perto..."
+        placeholder="Ex: sorrindo, virando o pé de lado no espelho, ajeitando a roupa..."
     )
 
     st.markdown("---")
@@ -211,8 +216,27 @@ with col_right:
     elif "Suave" in ritmo_duracao:
         prompt_unificado.append("Movimento de câmera suave, cadenciado e de longa duração.")
 
-    # 2. Ação Inicial + Transição / Exibição
-    if "Transição Viral" in tipo_plano:
+    # 2. Ação Inicial + Transição / Exibição conforme o Estilo Selecionado
+    if "Sapato" in tipo_plano:
+        prompt_unificado.append(
+            f"A CENA COMEÇA em perspectiva em primeira pessoa (POV) vista de cima das {detalhes_membro.lower()} "
+            f"abrindo a caixa de calçado sobre {cenario.lower()}, retirando o(a) {produto_nome if produto_nome else 'sapato/tênis'} "
+            f"de dentro da caixa e girando a peça lentamente nas mãos para mostrar em close-up o design, textura, costuras, solado e detalhes do modelo. "
+            f"NA SEQUÊNCIA, HÁ UMA TRANSIÇÃO COM CORTE RÁPIDO para a modelo vestindo o(a) mesmo(a) {produto_nome if produto_nome else 'sapato/tênis'} "
+            f"em pé em frente ao espelho de corpo inteiro. A câmera faz um zoom aproximado focado nos pés para mostrar o calçado no pé, "
+            f"enquanto ela gira levemente o tornozelo exibindo a peça em uso."
+        )
+
+    elif "Múltiplas Cores" in tipo_plano:
+        prompt_unificado.append(
+            f"Vídeo de exibição de produto com CÂMERA FIXA em tripé focada na modelo em {cenario.lower()}, olhando para a câmera e sorrindo "
+            f"enquanto passa a mão suavemente pelo corpo mostrando o caimento do(a) {produto_nome if produto_nome else 'roupa/conjunto'}. "
+            f"O VÍDEO CONTÉM TRANSIÇÕES RÁPIDAS E FLUIDAS (JUMP CUTS) onde a modelo permanece na mesma posição e enquadramento, "
+            f"mas alternando consecutivamente entre as diferentes variações de cores da mesma peça apresentadas nas imagens de referência anexadas, "
+            f"destacando toda a cartela de cores disponíveis para o produto."
+        )
+
+    elif "Transição Viral" in tipo_plano:
         prompt_unificado.append(
             f"A CENA COMEÇA com perspectiva em primeira pessoa (POV) vista de cima das {detalhes_membro.lower()} "
             f"rasgando a embalagem plástica transparente com calma, retirando o(a) {produto_nome if produto_nome else 'produto'} "
@@ -222,7 +246,7 @@ with col_right:
             f"Ela se vira suavemente mostrando o caimento do produto e o ajuste no corpo."
         )
 
-    elif "Showcase" in tipo_plano:
+    elif "Showcase Model" in tipo_plano:
         prompt_unificado.append(
             f"A CENA COMEÇA com um movimento dinâmico de câmera em 360 graus girando lentamente ao redor da personagem vestindo {detalhes_membro.lower()}. "
             f"A CÂMERA ENTÃO APROXIMA EM ZOOM LENTO para mostrar em close-up a textura do tecido, costuras, acabamento e detalhes de perto do(a) {produto_nome if produto_nome else 'produto'}."
@@ -272,13 +296,13 @@ with col_right:
     prompt_completo_texto = " ".join(prompt_unificado)
 
     # Exibição do Prompt
-    st.markdown("**Prompt Único (Sequência Completa + Unboxing + Detalhes + CTA Fixo Apontando para Baixo):**")
+    st.markdown("**Prompt Único (Sequência Completa + Ação + Detalhes + CTA Fixo Apontando para Baixo):**")
     st.code(prompt_completo_texto, language="markdown")
 
     # Orientação de Aplicação
     st.info(
         "💡 **Como Usar este Prompt Unificado:**\n\n"
-        "1. Na sua ferramenta de IA (Kling AI, Luma, Google Flow, Meta AI), anexe a foto do produto e/ou modelo.\n"
-        "2. Cole todo o texto gerado acima em um único campo de prompt.\n"
-        "3. A chamada para ação está pré-configurada para que a ação finalize apontando para baixo ('Compre Aqui 👇')."
+        "1. **Para Sapatos:** Anexe a foto da caixa/sapato e a foto da modelo com o sapato no pé.\n"
+        "2. **Para Múltiplas Cores:** Anexe a foto principal da modelo e as fotos de todas as cores disponíveis da mesma roupa.\n"
+        "3. Cole todo o texto gerado acima na sua IA de vídeo (Kling AI, Luma, Google Flow, Meta AI)."
     )
